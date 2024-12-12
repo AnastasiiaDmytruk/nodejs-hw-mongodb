@@ -1,27 +1,43 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import dotenv from 'dotenv';
+import { getEnvVariable } from './utils/getEnvVariable.js';
 
-dotenv.config();
-
-// console.log(process.env.DATABASE_PASSWORD);
+import { getContacts, getContactById } from './services/movie-services.js';
 
 export const setUpServer = () => {
   const app = express();
 
   app.use(cors());
   app.use(express.json());
-  //   app.use(pino({
-  //     transport:{
-  //         target: "pino-pretty"
-  //     }
-  //   }))
 
-  app.get('/', (req, res) => {
+  app.get('/contacts', async (req, res) => {
+    const data = await getContacts();
+
     res.json({
-      message: 'Start work',
+      status: 200,
+      message: 'Successfully found contacts!',
+      data,
     });
+  });
+
+  app.get('/contacts/:id', async (req, res) => {
+    const { id } = req.params;
+    const data = await getContactById();
+
+    if (!data) {
+      return res.status(404).json({
+        status: 404,
+        massage: ` Contact with id=${id} not found`,
+      });
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully found contact with id = ${id}!`,
+      data,
+    });
+    // console.log(req.params);
   });
 
   app.use((req, res) => {
@@ -37,6 +53,6 @@ export const setUpServer = () => {
     });
   });
 
-  const port = Number(process.env.PORT) || 3000;
+  const port = Number(getEnvVariable('PORT', 3000));
   app.listen(3000, () => console.log(`Server running on ${port} port`));
 };
