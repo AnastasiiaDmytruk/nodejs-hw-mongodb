@@ -1,9 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import pino from 'pino-http';
-import { getEnvVariable } from './utils/getEnvVariable.js';
 
-import { getContacts, getContactById } from './services/movie-services.js';
+import { getEnvVariable } from './utils/getEnvVariable.js';
+import { getContacts, getContactById } from './services/contact-services.js';
 
 export const setUpServer = () => {
   const app = express();
@@ -23,12 +22,13 @@ export const setUpServer = () => {
 
   app.get('/contacts/:id', async (req, res) => {
     const { id } = req.params;
-    const data = await getContactById();
+    const data = await getContactById(id);
 
     if (!data) {
       return res.status(404).json({
         status: 404,
         massage: ` Contact with id=${id} not found`,
+
       });
     }
 
@@ -42,7 +42,7 @@ export const setUpServer = () => {
 
   app.use((req, res) => {
     res.status(404).json({
-      message: `${req.url} not found`,
+      message: `${req.url} Not found`,
     });
   });
 
@@ -54,5 +54,5 @@ export const setUpServer = () => {
   });
 
   const port = Number(getEnvVariable('PORT', 3000));
-  app.listen(3000, () => console.log(`Server running on ${port} port`));
+  app.listen(port, () => console.log(`Server running on ${port} port`));
 };

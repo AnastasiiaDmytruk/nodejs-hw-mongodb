@@ -17,11 +17,13 @@ const contactSchema = new Schema({
   },
   contactType: {
     type: String,
-    enum: ["work", "home", "personal"],
+    enum: ['work', 'home', 'personal'],
     required: true,
     default: 'personal',
   },
+
+  // timestamps: true,
 });
 
-const ContactCollection = model("contact", contactSchema);
+const ContactCollection = model('contact', contactSchema);
 export default ContactCollection;
