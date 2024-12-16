@@ -1,8 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-
+import contactsRouter from './routers/routers-contacts.js';
 import { getEnvVariable } from './utils/getEnvVariable.js';
-import { getContacts, getContactById } from './services/contact-services.js';
 
 export const setUpServer = () => {
   const app = express();
@@ -10,35 +9,7 @@ export const setUpServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/contacts', async (req, res) => {
-    const data = await getContacts();
-
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data,
-    });
-  });
-
-  app.get('/contacts/:id', async (req, res) => {
-    const { id } = req.params;
-    const data = await getContactById(id);
-
-    if (!data) {
-      return res.status(404).json({
-        status: 404,
-        massage: ` Contact with id=${id} not found`,
-
-      });
-    }
-
-    res.json({
-      status: 200,
-      message: `Successfully found contact with id = ${id}!`,
-      data,
-    });
-    // console.log(req.params);
-  });
+  app.use('/contacts', contactsRouter);
 
   app.use((req, res) => {
     res.status(404).json({
