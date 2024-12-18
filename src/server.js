@@ -2,27 +2,23 @@ import express from 'express';
 import cors from 'cors';
 import contactsRouter from './routers/routers-contacts.js';
 import { getEnvVariable } from './utils/getEnvVariable.js';
-
+import { logger } from './middlewares/middleware-logger.js';
+import { middlewareNotFoundHandler } from './middlewares/middlewareNotFoundHandler.js';
+import { errorHandler } from './middlewares/middlewareErrorHndler.js';
 export const setUpServer = () => {
   const app = express();
 
   app.use(cors());
+
   app.use(express.json());
+
+  app.use(logger);
 
   app.use('/contacts', contactsRouter);
 
-  app.use((req, res) => {
-    res.status(404).json({
-      message: `${req.url} Not found`,
-    });
-  });
+  app.use(middlewareNotFoundHandler);
 
-  app.use((error, res, req, next) => {
-    res.status(500).json({
-      message: 'Server error',
-      error: error.message,
-    });
-  });
+  app.use(errorHandler);
 
   const port = Number(getEnvVariable('PORT', 3000));
   app.listen(port, () => console.log(`Server running on ${port} port`));
