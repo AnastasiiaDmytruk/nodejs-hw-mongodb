@@ -3,6 +3,7 @@ import cors from 'cors';
 
 import { getEnvVariable } from './utils/getEnvVariable.js';
 import { getContacts, getContactById } from './services/contact-services.js';
+// import { getContacts, getContactById } from '../services/contact-services.js';
 
 export const setUpServer = () => {
   const app = express();
