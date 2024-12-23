@@ -1,4 +1,3 @@
-// import dotenv from 'dotenv';
 import 'dotenv/config';
 
 export const getEnvVariable = (name, defaultValue) => {

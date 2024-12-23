@@ -21,13 +21,9 @@ export const getContactsByIdController = async (req, res) => {
   const { id } = req.params;
   const data = await getContactById(id);
 
-  if (!data) {
-    return res.status(404).json({
-      status: 404,
-      massage: ` Contact with id=${id} not found`,
-    });
+  if(!data){
+    throw createError(404, `Contact with id=${id} not found`);
   }
-
   res.json({
     status: 200,
     message: `Successfully found contact with id = ${id}!`,
