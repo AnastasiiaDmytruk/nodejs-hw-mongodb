@@ -4,7 +4,7 @@ import contactsRouter from './routers/routers-contacts.js';
 import { getEnvVariable } from './utils/getEnvVariable.js';
 import { logger } from './middlewares/middleware-logger.js';
 import { middlewareNotFoundHandler } from './middlewares/middlewareNotFoundHandler.js';
-import { errorHandler } from './middlewares/middlewareErrorHndler.js';
+import { errorHandler } from './middlewares/middlewareErrorHandler.js';
 export const setUpServer = () => {
   const app = express();
 
