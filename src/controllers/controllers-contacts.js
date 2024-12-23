@@ -40,7 +40,7 @@ export const addContactController = async (req, res) => {
 
   res.status(201).json({
     status: 201,
-    message: 'Successfully add movie',
+    message: 'Successfully add contact',
     data,
   });
 };
