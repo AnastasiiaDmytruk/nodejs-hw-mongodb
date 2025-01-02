@@ -1,4 +1,4 @@
-import mongoose, { get } from 'mongoose';
+import mongoose from 'mongoose';
 import { getEnvVariable } from '../utils/getEnvVariable.js';
 
 export const initMongoConnection = async () => {
@@ -12,7 +12,7 @@ export const initMongoConnection = async () => {
     console.log('Mongo connection successfully established!');
   } catch (error) {
     console.log(`Error connection Mongo ${error.message}`);
-    // throw error;
+    throw error;
   }
 };
 
