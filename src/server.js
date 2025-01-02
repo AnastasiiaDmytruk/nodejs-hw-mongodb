@@ -14,14 +14,15 @@ export const setUpServer = () => {
     const data = await getContacts();
 
     res.json({
-      status: 200,
+      status: 200, // це статус для краси ..додаткова інфа , справжній статус ми встановлюємо так:  res.status(200).json
       message: 'Successfully found contacts!',
       data,
     });
   });
 
   app.get('/contacts/:id', async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // витягуємо id з req.params // Express автоматично обробляє параметри шляху і додає їх у зручний об'єкт req.params.
+
     const data = await getContactById(id);
 
     if (!data) {
