@@ -6,5 +6,3 @@ const bootstrap = async () => {
   setUpServer(); // запускаємо сервер
 };
 bootstrap();
-
-// trying to commit
