@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 import { getEnvVariable } from '../utils/getEnvVariable.js';
 
 export const initMongoConnection = async () => {
@@ -18,4 +17,3 @@ export const initMongoConnection = async () => {
     throw error;
   }
 };
- 
