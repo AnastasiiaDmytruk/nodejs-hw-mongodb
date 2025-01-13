@@ -1,0 +1,23 @@
+Папка services зазвичай використовується для зберігання логіки, яка працює із зовнішніми чи внутрішніми ресурсами  додатку.
+Це шар між контролерами (controllers) і іншими компонентами, наприклад, базою даних, API або іншими службами. Основна мета папки services — зробити код чистішим, структурованим і легким для підтримки
+
+
+Що може міститися в папці services:
+userService.js - Робота з користувачами (CRUD-операції).
+authService.js - Аутентифікація (логіка для токенів і паролів).
+postService.js - CRUD-операції для публікацій.
+emailService.js - Відправка електронної пошти.
+paymentService.js - Інтеграція з платіжними системами (Stripe, PayPal тощо).
+apiService.js - Робота із зовнішніми API.
+fileService.js - Завантаження та обробка файлів.
+cacheService.js - Кешування даних (Redis тощо).
+notificationService.js - Відправка сповіщень (SMS, Push).
+databaseService.js - Допоміжні запити до бази даних.
+analyticsService.js - Логіка для збору аналітики.
+loggingService.js - Логування подій додатку.
+weatherService.js - Інтеграція з погодними API.
+translationService.js - Переклади та робота з мовними даними.
+reportService.js - Генерація звітів.
+paymentGatewayService.js - Робота з платіжними шлюзами.
+validationService.js - Валідація даних.
+emailTemplateService.js - Управління шаблонами для електронної пошти.
