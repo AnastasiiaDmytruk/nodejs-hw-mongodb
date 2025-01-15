@@ -56,7 +56,7 @@ export const sortByList = [
   'phoneNumber',
   'email',
   'isFavourite',
-  'constactType',
+  'contactType',
 ];
 
 const ContactCollection = model('contact', contactSchema); // хоча ми звертаємось до contacts в множині але тут пишемо contact тому що так історично склалось і монгуз сам знає що звертаємось до множини ( так в документаціі вказано)

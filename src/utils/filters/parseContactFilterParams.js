@@ -2,7 +2,7 @@
 
 const parseContactType = (type) => {
   const isString = typeof type === 'string';
-  if (isString) return;
+  if (!isString) return;
 
   //   const isType = (type) => typeList.includes(type);
   const isType = (type) => ['work', 'home', 'personal'].includes(type);
@@ -12,6 +12,6 @@ const parseContactType = (type) => {
 export const parseContactFilterParams = ({ type }) => {
   const parsedContactType = parseContactType(type);
   return {
-    contactType: parsedContactType,
+    type: parsedContactType,
   };
 };
