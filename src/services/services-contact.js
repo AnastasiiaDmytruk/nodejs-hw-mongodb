@@ -4,7 +4,7 @@ import { calcPaginationData } from '../utils/calcPaginationData.js';
 export const getContacts = async ({
   page = 1,
   perPage = 10,
-  sortBy = 'name',
+  sortBy = 'contactType',
   sortOrder = 'asc',
   filter = {},
 }) => {
@@ -15,18 +15,20 @@ export const getContacts = async ({
   if (filter.type) {
     contactsQuery.where('contactType').equals(filter.type);
   }
-  const totalItems = await ContactCollection.find()
-    .merge(contactsQuery)
-    .countDocuments();
 
-  const data = await ContactCollection.find()
+  const data = await contactsQuery
     .skip(skip)
     .limit(limit)
     .sort({ [sortBy]: sortOrder });
 
+  const totalItems = await ContactCollection.find()
+    .merge(contactsQuery)
+    .countDocuments();
+
   const paginationData = calcPaginationData({ totalItems, page, perPage });
   return {
     data,
+    totalItems,
     ...paginationData,
   };
 };

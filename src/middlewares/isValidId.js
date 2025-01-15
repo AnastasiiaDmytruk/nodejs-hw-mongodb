@@ -3,7 +3,7 @@ import { isValidObjectId } from 'mongoose';
 
 export const isValidId = (req, res, next) => {
   const { id } = req.params;
-  if (isValidObjectId(id)) {
+  if (!isValidObjectId(id)) {
     return next(createError(404, `${id} is not valid id`));
   }
   next();

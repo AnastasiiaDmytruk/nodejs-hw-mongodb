@@ -7,6 +7,7 @@ export const contactAddScema = Joi.object({
     .messages({ 'string.empty': 'Name is definitly required' }),
   phoneNumber: Joi.string().required(),
   email: Joi.string().required(),
+  isFavourite: Joi.boolean(),
   contactType: Joi.string()
     .valid(...typeList) // розпилюємо тому що в valid передається масив значень через кому
     .required(),
@@ -17,5 +18,6 @@ export const contactUpdateScema = Joi.object({
     .messages({ 'string.empty': 'Name is definitly required' }),
   phoneNumber: Joi.string(),
   email: Joi.string(),
+  isFavourite: Joi.boolean(),
   contactType: Joi.string().valid(...typeList),
 });
