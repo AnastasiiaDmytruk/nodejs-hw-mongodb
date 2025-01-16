@@ -1,4 +1,4 @@
-const sortOrderList = ['asc', 'dsc'];
+const sortOrderList = ['asc', 'desc'];
 
 export const parseSortParams = ({ sortBy, sortOrder }, sortByList) => {
   const parsedSortOrder = sortOrderList.includes(sortOrder)
