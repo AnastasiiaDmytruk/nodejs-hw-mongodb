@@ -5,7 +5,7 @@ export const parseSortParams = ({ sortBy, sortOrder }, sortByList) => {
     ? sortOrder
     : sortOrderList[0];
 
-  const parsedSortBy = sortByList.includes(sortBy) ? sortBy : 'name';
+  const parsedSortBy = sortByList.includes(sortBy) ? sortBy : 'contactType';
   return {
     sortBy: parsedSortBy,
     sortOrder: parsedSortOrder,
