@@ -31,6 +31,6 @@ userSchema.pre('findOneAndUpdate', setUpdateSettings);
 
 // userSchema.post('findOneAndUpdate', handleSaveError);
 
-const User = model('user', userSchema);
+const UserCollection = model('user', userSchema);
 
-export default User;
+export default UserCollection;
