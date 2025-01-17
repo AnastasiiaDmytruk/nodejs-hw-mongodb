@@ -5,6 +5,7 @@ import { getEnvVariable } from './utils/getEnvVariable.js';
 import { logger } from './middlewares/middleware-logger.js';
 import { middlewareNotFoundHandler } from './middlewares/middlewareNotFoundHandler.js';
 import { errorHandler } from './middlewares/middlewareErrorHandler.js';
+import authRouter from './routers/routers-auth.js';
 
 export const setUpServer = () => {
   const app = express();
@@ -15,6 +16,7 @@ export const setUpServer = () => {
 
   app.use(logger);
 
+  app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
   app.use(middlewareNotFoundHandler);
