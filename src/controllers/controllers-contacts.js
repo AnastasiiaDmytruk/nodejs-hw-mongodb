@@ -5,6 +5,8 @@ import {
   updateContact,
   deleteContact,
 } from '../services/services-contact.js';
+// import { refreshToken } from '../services/services-auth.js';
+
 import createError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -15,6 +17,7 @@ export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query, sortByList);
   const filter = parseContactFilterParams(req.query);
+  filter.userId = req.user._id;
 
   const data = await getContacts({ page, perPage, sortBy, sortOrder, filter });
 
@@ -26,44 +29,27 @@ export const getContactsController = async (req, res) => {
 };
 
 export const getContactsByIdController = async (req, res) => {
-  const { id } = req.params;
-  const data = await getContactById(id);
+  const { _id: userId } = req.user;
+
+  const { id: _id } = req.params;
+
+  const data = await getContactById({ _id, userId });
 
   if (!data) {
-    throw createError(404, `Contact with id=${id} not found`);
+    throw createError(404, `Contact with id=${_id} not found`);
   }
   res.json({
     status: 200,
-    message: `Successfully found contact with id = ${id}!`,
+    message: `Successfully found contact with id = ${_id}!`,
     data,
   });
 };
 
 export const addContactController = async (req, res) => {
-  // validation option 1
-  //  const { error } = contactAddScema.validate(req.body, {
-  //   abortEarly: false,
-  // });
-  // if (error) {
-  //   throw createError(400, error.message);
-  // }
-  // якщо передати значення неправильно або не повністю в метода validate є два поля :
-  // value та error. Тому ми деструктуризуємо(дістаємо) error і проводимо перевірку : якщо є error то викини error, якщо error немає то ми навіть не заходимо в if а одразу додаємо контакт
+  // console.log(req.user);
 
-  // перериває роботу після першої помилки аби цього не відбувалось в метод validate другим методом передається такий об'єкт: {abortEarly: false}
-  //validate це синхронний тому краще використовувати validateAsync:
-
-  //  validation option 2
-  //  try {
-  //   await contactAddScema.validateAsync(req.body, { abortEarly: false });
-  // } catch (error) {
-  //   throw createError(400, error.message);
-  // }
-
-  // validation option 3
-  // через декоратор мідлвару validateBody яка знаходиться в utils а використовується в routers
-
-  const data = await addContact(req.body);
+  const { _id: userId } = req.user;
+  const data = await addContact({ ...req.body, userId });
   // req.body - тіло запиту( те що надіслав фронтенд)
 
   res.status(201).json({
@@ -75,7 +61,12 @@ export const addContactController = async (req, res) => {
 
 export const upsertContactController = async (req, res) => {
   const { id } = req.params;
-  const { isNew, data } = await updateContact(id, req.body, { upsert: true });
+  const { _id: userId } = req.params;
+  const { isNew, data } = await updateContact(
+    id,
+    { ...req.body, userId },
+    { upsert: true },
+  );
 
   const status = isNew ? 201 : 200;
 
@@ -87,11 +78,12 @@ export const upsertContactController = async (req, res) => {
 };
 
 export const patchContactController = async (req, res) => {
-  const { id } = req.params;
-  const result = await updateContact(id, req.body);
+  const { id: _id } = req.params;
+  const { _id: userId } = req.params;
+  const result = await updateContact({ _id, userId }, req.body);
 
   if (!result) {
-    throw createError(404, `Contact with id=${id} not found`);
+    throw createError(404, `Contact with id=${_id} not found`);
   }
 
   res.json({
@@ -102,11 +94,12 @@ export const patchContactController = async (req, res) => {
 };
 
 export const deleteContactController = async (req, res) => {
-  const { id } = req.params;
-  const data = await deleteContact({ _id: id });
+  const { id: _id } = req.params;
+  const { _id: userId } = req.params;
+  const data = await deleteContact({ _id: userId });
 
   if (!data) {
-    throw createError(404, `Contact with id=${id} not found`);
+    throw createError(404, `Contact with id=${_id} not found`);
   }
 
   res.status(204).send();

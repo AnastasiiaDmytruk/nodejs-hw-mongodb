@@ -7,8 +7,10 @@ import {
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   loginController,
+  logoutController,
   registerController,
 } from '../controllers/controllers-auth.js';
+import { refreshTokenController } from '../controllers/controllers-auth.js';
 
 const authRouter = Router();
 //авторизація
@@ -23,5 +25,9 @@ authRouter.post(
   validateBody(authLoginSchema),
   ctrlWrapper(loginController),
 );
+
+authRouter.post('/refresh', ctrlWrapper(refreshTokenController));
+
+authRouter.post('/logout', ctrlWrapper(logoutController));
 
 export default authRouter;
