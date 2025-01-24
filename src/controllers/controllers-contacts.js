@@ -12,6 +12,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { sortByList } from '../db/models/Contact.js';
 import { parseContactFilterParams } from '../utils/filters/parseContactFilterParams.js';
+import mongoose, { mongo } from 'mongoose';
 
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -77,10 +78,15 @@ export const upsertContactController = async (req, res) => {
   });
 };
 
-export const patchContactController = async (req, res) => {
+export const patchContactController = async (req, res, next) => {
   const { id: _id } = req.params;
   const { _id: userId } = req.params;
   const result = await updateContact({ _id, userId }, req.body);
+  // const photo = req.file;
+  // let photoUrl;
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return next(createError(400, 'Invalid id'));
+  // }
 
   if (!result) {
     throw createError(404, `Contact with id=${_id} not found`);

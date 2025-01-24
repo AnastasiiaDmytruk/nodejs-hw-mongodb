@@ -15,7 +15,6 @@ import {
   resetPasswordController,
 } from '../controllers/controllers-auth.js';
 import { refreshTokenController } from '../controllers/controllers-auth.js';
-import { resetPassword } from '../services/services-auth.js';
 
 const authRouter = Router();
 //авторизація
