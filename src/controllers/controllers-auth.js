@@ -3,9 +3,8 @@ import {
   login,
   logout,
   requestResetToken,
+  resetPassword,
 } from '../services/services-auth.js';
-
-import { resetPassword } from '../services/services-auth.js';
 
 const setUpSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
