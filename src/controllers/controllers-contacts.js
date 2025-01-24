@@ -28,21 +28,42 @@ export const getContactsController = async (req, res) => {
   });
 };
 
-export const getContactsByIdController = async (req, res) => {
-  const { _id: userId } = req.user;
+// export const getContactsByIdController = async (req, res, next) => {
+//   const { _id: userId } = req.user;
 
-  const { id: _id } = req.params;
+//   const { id: _id } = req.params;
 
-  const data = await getContactById({ _id, userId });
+//   const data = await getContactById({ _id, userId });
 
-  if (!data) {
-    throw createError(404, `Contact with id=${_id} not found`);
+//   if (!data) {
+//     throw createError(404, `Contact with id=${_id} not found`);
+//   }
+//   res.json({
+//     status: 200,
+//     message: `Successfully found contact with id = ${_id}!`,
+//     data,
+//   });
+// };
+
+export const getContactsByIdController = async (req, res, next) => {
+  try {
+    const { _id: userId } = req.user;
+    const { id: _id } = req.params;
+
+    const data = await getContactById({ _id, userId });
+
+    if (!data) {
+      throw createError(404, `Contact with id=${_id} not found`);
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully found contact with id = ${_id}!`,
+      data,
+    });
+  } catch (error) {
+    next(error);
   }
-  res.json({
-    status: 200,
-    message: `Successfully found contact with id = ${_id}!`,
-    data,
-  });
 };
 
 export const addContactController = async (req, res) => {
