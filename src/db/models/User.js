@@ -23,7 +23,7 @@ const userSchema = new Schema(
   },
   { versionKey: false, timestamps: true },
 );
-
+// видаляємо пароль з відповіді  на POST запит
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

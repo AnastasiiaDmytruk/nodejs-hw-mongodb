@@ -1,4 +1,9 @@
-import { register, login, logout } from '../services/services-auth.js';
+import {
+  register,
+  login,
+  logout,
+  refreshTokenService,
+} from '../services/services-auth.js';
 
 const setUpSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
@@ -37,9 +42,19 @@ export const loginController = async (req, res) => {
   });
 };
 
+export const logoutController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logout(req.cookies.sessionId);
+  }
+
+  res.clearCookie('refreshToken');
+  res.clearCookie('sessionId');
+  res.status(204).send();
+};
+
 export const refreshTokenController = async (req, res) => {
   const { refreshToken, sessionId } = req.cookies;
-  const session = await refreshToken({ refreshToken, sessionId });
+  const session = await refreshTokenService({ refreshToken, sessionId });
 
   setUpSession(res, session);
 
@@ -50,14 +65,4 @@ export const refreshTokenController = async (req, res) => {
       accessToken: session.accessToken,
     },
   });
-};
-
-export const logoutController = async (req, res) => {
-  if (req.cookies.sessionId) {
-    await logout(req.cookies.sessionId);
-  }
-
-  res.clearCookie('refreshToken');
-  res.clearCookie('sessionId');
-  res.status(204).send();
 };
