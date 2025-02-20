@@ -2,7 +2,7 @@ import {
   register,
   login,
   logout,
-  refreshTokenService,
+  refreshSession,
 } from '../services/services-auth.js';
 
 const setUpSession = (res, session) => {
@@ -54,7 +54,7 @@ export const logoutController = async (req, res) => {
 
 export const refreshTokenController = async (req, res) => {
   const { refreshToken, sessionId } = req.cookies;
-  const session = await refreshTokenService({ refreshToken, sessionId });
+  const session = await refreshSession({ refreshToken, sessionId });
 
   setUpSession(res, session);
 
