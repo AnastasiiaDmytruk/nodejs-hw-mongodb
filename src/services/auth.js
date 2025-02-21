@@ -27,10 +27,14 @@ const createSessionData = () => ({
 
 export const register = async (payload) => {
   const { email, password } = payload;
+
+  // перевіряємо email на унікальність
   const user = await UserCollection.findOne({ email });
   if (user) {
     throw createHttpError(409, 'User allready exists');
   }
+
+  // зберігаємо пароль у вигляді хешу
   const hashPassword = await bcrypt.hash(password, 10);
 
   const newUser = await UserCollection.create({
@@ -40,12 +44,13 @@ export const register = async (payload) => {
   return newUser;
 };
 
-export const login = async ({ email, password }) => {
+export const login = async (payload) => {
+  const { email, password } = payload;
   const user = await UserCollection.findOne({ email });
   if (!user) {
     throw createHttpError(401, 'Email or password invalid');
   }
-
+  // порівнюємо хеш пароля що ввели з тим що можливо зберігається в базі даних
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
     throw createHttpError(401, 'Email or password invalid');
@@ -60,29 +65,34 @@ export const login = async ({ email, password }) => {
   });
 };
 
-export const refreshToken = async (payload) => {
+export const logout = async (sessionId) => {
+  await SessionCollection.deleteOne({ _id: sessionId });
+};
+
+export const refreshSession = async (payload) => {
+  const { sessionId, refreshToken } = payload;
+
   const oldSession = await SessionCollection.findOne({
-    _id: payload.sessionId,
-    refreshToken: payload.refreshToken,
+    _id: sessionId,
+    refreshToken: refreshToken,
   });
+
   if (!oldSession) {
     throw createHttpError(401, 'Session not found');
   }
+
   if (Date.now() > oldSession.refreshTokenValidUntil) {
     throw createHttpError(401, 'Refresh token expired');
   }
 
-  await SessionCollection.deleteOne({ _id: payload.sessionId });
-  const sessionData = createSessionData();
+  await SessionCollection.deleteOne({ _id: sessionId });
+
+  const newSession = createSessionData();
 
   return SessionCollection.create({
     userId: oldSession.userId,
-    ...sessionData,
+    ...newSession,
   });
-};
-
-export const logout = async (sessionId) => {
-  await SessionCollection.deleteOne({ _id: sessionId });
 };
 
 export const requestResetToken = async (email) => {

@@ -6,7 +6,7 @@ import { emailRegexp } from '../../constants/user.js';
 
 const userSchema = new Schema(
   {
-    username: {
+    name: {
       type: String,
       required: true,
     },
@@ -28,12 +28,18 @@ const userSchema = new Schema(
   },
   { versionKey: false, timestamps: true },
 );
+// видаляємо пароль з відповіді  на POST запит
+userSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
 userSchema.post('save', handleSaveError);
 
 userSchema.pre('findOneAndUpdate', setUpdateSettings);
 
-// userSchema.post('findOneAndUpdate', handleSaveError);
+userSchema.post('findOneAndUpdate', handleSaveError);
 
 const UserCollection = model('user', userSchema);
 

@@ -19,11 +19,12 @@ const setUpSession = (res, session) => {
 };
 
 export const registerController = async (req, res) => {
-  await register(req.body);
+  const user = await register(req.body);
 
   res.status(201).json({
     status: 201,
     message: 'Successfully registered a user!',
+    data: user,
   });
 };
 
@@ -42,20 +43,30 @@ export const loginController = async (req, res) => {
   });
 };
 
-export const refreshTokenController = async (req, res) => {
-  const { refreshToken, sessionId } = req.cookies;
-  const session = await refreshToken({ refreshToken, sessionId });
+// export const logoutController = async (req, res) => {
+//   if (req.cookies.sessionId) {
+//     await logout(req.cookies.sessionId);
+//   }
 
-  setUpSession(res, session);
+//   res.clearCookie('refreshToken');
+//   res.clearCookie('sessionId');
+//   res.status(204).send();
+// };
 
-  res.json({
-    status: 200,
-    message: 'Successfully refreshed a session!',
-    data: {
-      accessToken: session.accessToken,
-    },
-  });
-};
+// export const refreshTokenController = async (req, res) => {
+//   const { refreshToken, sessionId } = req.cookies;
+//   const session = await refreshSession({ refreshToken, sessionId });
+
+//   setUpSession(res, session);
+
+//   res.json({
+//     status: 200,
+//     message: 'Successfully refreshed a session!',
+//     data: {
+//       accessToken: session.accessToken,
+//     },
+//   });
+// };
 
 export const logoutController = async (req, res) => {
   if (req.cookies.sessionId) {

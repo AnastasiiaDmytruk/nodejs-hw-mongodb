@@ -27,25 +27,29 @@ export const getContactsController = async (req, res) => {
   });
 };
 
-export const getContactsByIdController = async (req, res) => {
-  const { _id: userId } = req.user;
+export const getContactsByIdController = async (req, res, next) => {
+  try {
+    const { _id: userId } = req.user;
+    const { id: _id } = req.params;
 
-  const { id: _id } = req.params;
+    const data = await getContactById({ _id, userId });
 
-  const data = await getContactById({ _id, userId });
+    if (!data) {
+      throw createError(404, `Contact with id=${_id} not found`);
+    }
 
-  if (!data) {
-    throw createError(404, `Contact with id=${_id} not found`);
+    res.json({
+      status: 200,
+      message: `Successfully found contact with id = ${_id}!`,
+      data,
+    });
+  } catch (error) {
+    next(error);
   }
-  res.json({
-    status: 200,
-    message: `Successfully found contact with id = ${_id}!`,
-    data,
-  });
 };
 
 export const addContactController = async (req, res) => {
-  // console.log(req.user);
+  console.log("Це об'єкт юзера в контроллері", req.user);
 
   const { _id: userId } = req.user;
   const data = await addContact({ ...req.body, userId });
@@ -78,7 +82,7 @@ export const upsertContactController = async (req, res) => {
 
 export const patchContactController = async (req, res, next) => {
   const { id: _id } = req.params;
-  const { _id: userId } = req.params;
+  const { _id: userId } = req.user;
   const result = await updateContact({ _id, userId }, req.body);
   // const photo = req.file;
   // let photoUrl;
@@ -99,8 +103,9 @@ export const patchContactController = async (req, res, next) => {
 
 export const deleteContactController = async (req, res) => {
   const { id: _id } = req.params;
-  const { _id: userId } = req.params;
-  const data = await deleteContact({ _id: userId });
+  const { _id: userId } = req.user;
+
+  const data = await deleteContact({ _id, userId });
 
   if (!data) {
     throw createError(404, `Contact with id=${_id} not found`);

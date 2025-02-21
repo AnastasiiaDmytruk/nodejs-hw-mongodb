@@ -31,7 +31,7 @@ sessionSchema.post('save', handleSaveError);
 
 sessionSchema.pre('findOneAndUpdate', setUpdateSettings);
 
-// sessionSchema.post('findOneAndUpdate', handleSaveError);
+sessionSchema.post('findOneAndUpdate', handleSaveError);
 
 const SessionCollection = model('session', sessionSchema);
 
