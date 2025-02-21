@@ -8,7 +8,7 @@ import { randomBytes } from 'crypto';
 import {
   accessTokenLifeTime,
   refreshTokenLifeTime,
-} from '../constants/constants-user.js';
+} from '../constants/user.js';
 
 import { getEnvVariable } from '../utils/getEnvVariable.js';
 import { sendEmail } from '../utils/sendEmail.js';

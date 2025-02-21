@@ -4,15 +4,13 @@ import {
   addContact,
   updateContact,
   deleteContact,
-} from '../services/services-contact.js';
-// import { refreshToken } from '../services/services-auth.js';
+} from '../services/contact.js';
 
 import createError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { sortByList } from '../db/models/Contact.js';
 import { parseContactFilterParams } from '../utils/filters/parseContactFilterParams.js';
-import mongoose, { mongo } from 'mongoose';
 
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);

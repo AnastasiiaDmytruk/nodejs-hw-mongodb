@@ -2,7 +2,7 @@
 
 import { Schema, model } from 'mongoose';
 import { handleSaveError, setUpdateSettings } from '../hooks.js';
-import { emailRegexp } from '../../constants/constants-user.js';
+import { emailRegexp } from '../../constants/user.js';
 
 const userSchema = new Schema(
   {
