@@ -41,6 +41,13 @@ export const register = async (payload) => {
     ...payload,
     password: hashPassword,
   });
+
+  // const verifyEmail = {
+  //   to: email,
+  //   subject: 'Verify email',
+  //   html:
+  // };
+
   return newUser;
 };
 
@@ -50,8 +57,13 @@ export const login = async (payload) => {
   if (!user) {
     throw createHttpError(401, 'Email or password invalid');
   }
+
+  // if (!user.verify) {
+  //   throw createHttpError(401, 'Email is not verified');
+  // }
   // порівнюємо хеш пароля що ввели з тим що можливо зберігається в базі даних
   const passwordCompare = await bcrypt.compare(password, user.password);
+
   if (!passwordCompare) {
     throw createHttpError(401, 'Email or password invalid');
   }
@@ -95,40 +107,42 @@ export const refreshSession = async (payload) => {
   });
 };
 
-export const requestResetToken = async (email) => {
+export const requestResetPassword = async (email) => {
   const user = await UserCollection.findOne({ email });
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-  const resetToken = jwt.sign(
-    {
-      sub: user._id,
-      email,
-    },
-    getEnvVariable('JWT_SECRET'),
-    { expiresIn: '15m' },
-  );
 
-  const resetPasswordTemplatePath = path.join(
-    TEMPLATES_DIR,
-    'reset-password-email.html',
-  );
+  // const resetToken = jwt.sign(
+  //   {
+  //     sub: user._id,
+  //     email,
+  //   },
+  //   getEnvVariable('JWT_SECRET'),
+  //   { expiresIn: '15m' },
+  // );
 
-  const templateSource = (
-    await fs.readFile(resetPasswordTemplatePath)
-  ).toString();
+  // const resetPasswordTemplatePath = path.join(
+  //   TEMPLATES_DIR,
+  //   'reset-password-email.html',
+  // );
 
-  const template = handlebars.compile(templateSource);
-  const html = template({
-    name: user.name,
-    link: `${getEnvVariable('APP_DOMAIN')}/reset-password?token=${resetToken}`,
-  });
+  // const templateSource = (
+  //   await fs.readFile(resetPasswordTemplatePath)
+  // ).toString();
+
+  // const template = handlebars.compile(templateSource);
+  // const html = template({
+  //   name: user.name,
+  //   link: `${getEnvVariable('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  // });
 
   await sendEmail({
     from: getEnvVariable(SMTP.SMTP_FROM),
     to: email,
-    subject: 'Reset you  password',
-    html: `<p>Click <a href = "${resetToken}">here</a>to reset your password!</p>`,
+    subject: 'Reset your password',
+    // html: `<p>Click <a href = "${resetToken}">here</a>to reset your password!</p>`,
+    html: `<p>Hello world</p>`,
   });
 };
 
@@ -155,6 +169,7 @@ export const resetPassword = async (payload) => {
     { password: encryptedPassword },
   );
 };
+
 export const getUser = (filter) => UserCollection.findOne(filter);
 
 export const getSession = (filter) => SessionCollection.findOne(filter);

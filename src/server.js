@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import contactsRouter from './routers/routers-contacts.js';
+import contactsRouter from './routers/contacts.js';
 import { getEnvVariable } from './utils/getEnvVariable.js';
-// import { logger } from './middlewares/middleware-logger.js';
-import { middlewareNotFoundHandler } from './middlewares/middlewareNotFoundHandler.js';
-import { errorHandler } from './middlewares/middlewareErrorHandler.js';
-import authRouter from './routers/routers-auth.js';
+// import { logger } from './middlewares/logger.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import authRouter from './routers/auth.js';
 import cookieParser from 'cookie-parser';
 
 export const setUpServer = () => {
@@ -20,7 +20,7 @@ export const setUpServer = () => {
   app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
-  app.use(middlewareNotFoundHandler);
+  app.use(notFoundHandler);
 
   app.use(errorHandler);
 

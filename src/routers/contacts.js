@@ -6,14 +6,11 @@ import {
   upsertContactController,
   patchContactController,
   deleteContactController,
-} from '../controllers/controllers-contacts.js';
+} from '../controllers/contacts.js';
 
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import {
-  contactAddScema,
-  contactUpdateScema,
-} from '../validation/validation-contacts.js';
-import { validateBody } from '../utils/validateBody.js';
+import { contactAddScema, contactUpdateScema } from '../validation/contacts.js';
+import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
@@ -50,4 +47,5 @@ contactsRouter.patch(
 );
 
 contactsRouter.delete('/:id', isValidId, ctrlWrapper(deleteContactController));
+
 export default contactsRouter;

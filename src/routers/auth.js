@@ -1,20 +1,20 @@
 import { Router } from 'express';
-import { validateBody } from '../utils/validateBody.js';
+import { validateBody } from '../middlewares/validateBody.js';
 import {
   authLoginSchema,
   authRegisterSchema,
-  requestResetEmailSchema,
+  requestResetPasswordSchema,
   resetPasswordSchema,
-} from '../validation/validation-auth.js';
+} from '../validation/auth.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   loginController,
   logoutController,
+  refreshSessionController,
   registerController,
   requestResetEmailController,
   resetPasswordController,
-} from '../controllers/controllers-auth.js';
-import { refreshTokenController } from '../controllers/controllers-auth.js';
+} from '../controllers/auth.js';
 
 const authRouter = Router();
 //авторизація
@@ -30,20 +30,20 @@ authRouter.post(
   ctrlWrapper(loginController),
 );
 
+authRouter.post('/refresh', ctrlWrapper(refreshSessionController));
+
+authRouter.post(
+  '/send-reset-email',
+  validateBody(requestResetPasswordSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+
 authRouter.post(
   'reset-password',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
 
-authRouter.post('/refresh', ctrlWrapper(refreshTokenController));
-
 authRouter.post('/logout', ctrlWrapper(logoutController));
-
-authRouter.post(
-  '/request-reset-email',
-  validateBody(requestResetEmailSchema),
-  ctrlWrapper(requestResetEmailController),
-);
 
 export default authRouter;

@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { typeList } from '../../constants/constants-contacts.js';
+import { typeList } from '../../constants/contacts.js';
 import { handleSaveError, setUpdateSettings } from '../hooks.js';
 
 const contactSchema = new Schema(

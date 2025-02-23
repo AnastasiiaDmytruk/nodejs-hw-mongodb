@@ -2,11 +2,12 @@ import {
   register,
   login,
   logout,
-  requestResetToken,
   resetPassword,
+  refreshSession,
+  requestResetPassword,
 } from '../services/auth.js';
 
-const setUpSession = (res, session) => {
+const setUpSessionCookies = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: session.refreshTokenValidUntil,
@@ -32,7 +33,7 @@ export const loginController = async (req, res) => {
   const session = await login(req.body);
   console.log(session);
 
-  setUpSession(res, session);
+  setUpSessionCookies(res, session);
 
   res.json({
     status: 200,
@@ -43,30 +44,20 @@ export const loginController = async (req, res) => {
   });
 };
 
-// export const logoutController = async (req, res) => {
-//   if (req.cookies.sessionId) {
-//     await logout(req.cookies.sessionId);
-//   }
+export const refreshSessionController = async (req, res) => {
+  const { refreshToken, sessionId } = req.cookies;
+  const session = await refreshSession({ refreshToken, sessionId });
 
-//   res.clearCookie('refreshToken');
-//   res.clearCookie('sessionId');
-//   res.status(204).send();
-// };
+  setUpSessionCookies(res, session);
 
-// export const refreshTokenController = async (req, res) => {
-//   const { refreshToken, sessionId } = req.cookies;
-//   const session = await refreshSession({ refreshToken, sessionId });
-
-//   setUpSession(res, session);
-
-//   res.json({
-//     status: 200,
-//     message: 'Successfully refreshed a session!',
-//     data: {
-//       accessToken: session.accessToken,
-//     },
-//   });
-// };
+  res.json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
+};
 
 export const logoutController = async (req, res) => {
   if (req.cookies.sessionId) {
@@ -79,7 +70,8 @@ export const logoutController = async (req, res) => {
 };
 
 export const requestResetEmailController = async (req, res) => {
-  await requestResetToken(req.body.email);
+  await requestResetPassword(req.body.email);
+
   res.json({
     message: 'Reset password email was successfully sent!',
     status: 200,

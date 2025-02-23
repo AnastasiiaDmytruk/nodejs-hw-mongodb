@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { typeList } from '../constants/constants-contacts.js';
+import { typeList } from '../constants/contacts.js';
 
 export const contactAddScema = Joi.object({
   name: Joi.string()

@@ -1,4 +1,4 @@
-// import { typeList } from '../../constants/constants-contacts.js';
+// import { typeList } from '../../constants/contacts.js';
 
 const parseContactType = (type) => {
   const isString = typeof type === 'string';
