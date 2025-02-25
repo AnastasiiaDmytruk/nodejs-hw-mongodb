@@ -146,51 +146,29 @@ export const requestResetPassword = async (email) => {
   });
 };
 
-// export const resetPassword = async (payload) => {
-//   let entries;
-//   try {
-//     entries = jwt.verify(payload.token, getEnvVariable('JWT_SECRET'));
-//   } catch (err) {
-//     if (err instanceof Error) throw createHttpError(401, err.message);
-
-//     throw err;
-//   }
-//   const user = await UserCollection.findOne({
-//     email: entries.email,
-//     _id: entries.sub,
-//   });
-
-//   if (!user) {
-//     throw createHttpError(404, 'User not found');
-//   }
-//   const encryptedPassword = await bcrypt.hash(payload.password, 10);
-
-//   await UserCollection.updateOne(
-//     { _id: user._id },
-//     { password: encryptedPassword },
-//   );
-// };
-
-export const resetPassword = async ({ password, token }) => {
-  let payload;
+export const resetPassword = async (payload) => {
+  let entries;
   try {
-    payload = jwt.verify(token, getEnvVariable('JWT_SECRET'));
-  } catch (error) {
-    console.error(error);
-    throw createHttpError(401, 'JWT token is invalid or expired');
-  }
+    entries = jwt.verify(payload.token, getEnvVariable('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error) throw createHttpError(401, err.message);
 
-  const user = await UserCollection.findById(payload.sub);
+    throw err;
+  }
+  const user = await UserCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
 
   if (!user) {
-    throw createHttpError(401, 'User not found');
+    throw createHttpError(404, 'User not found');
   }
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
-  const encryptedPassword = await bcrypt.hash(password, 10);
-
-  await UserCollection.findByIdAndUpdate(user._id, {
-    password: encryptedPassword,
-  });
+  await UserCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
 };
 
 export const getUser = (filter) => UserCollection.findOne(filter);
