@@ -27,7 +27,7 @@ properties:
     type: boolean
     example: false
   contactType:
-    description: "Contact's age"
+    description: "Contact's type"
     type: string
     enum: ['work', 'home', 'personal']
   userId:
