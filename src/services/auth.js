@@ -17,6 +17,10 @@ import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
 import handlebars from 'handlebars';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 const resetPasswordTemplatePath = path.join(
   TEMPLATES_DIR,
@@ -86,8 +90,27 @@ export const login = async (payload) => {
   });
 };
 
-export const logout = async (sessionId) => {
-  await SessionCollection.deleteOne({ _id: sessionId });
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401);
+
+  let user = await UserCollection.findOne({ email: payload.email });
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+    user = await UserCollection.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  const sessionData = createSessionData();
+
+  return await SessionCollection.create({
+    userId: user._id,
+    ...sessionData,
+  });
 };
 
 export const refreshSession = async (payload) => {
@@ -108,11 +131,11 @@ export const refreshSession = async (payload) => {
 
   await SessionCollection.deleteOne({ _id: sessionId });
 
-  const newSession = createSessionData();
+  const sessionData = createSessionData();
 
   return SessionCollection.create({
     userId: oldSession.userId,
-    ...newSession,
+    ...sessionData,
   });
 };
 
@@ -169,6 +192,10 @@ export const resetPassword = async (payload) => {
     { _id: user._id },
     { password: encryptedPassword },
   );
+};
+
+export const logout = async (sessionId) => {
+  await SessionCollection.deleteOne({ _id: sessionId });
 };
 
 export const getUser = (filter) => UserCollection.findOne(filter);
